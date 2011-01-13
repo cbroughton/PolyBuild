@@ -24,6 +24,50 @@ except:
 # Import Local Process
 import logic
 
+class GUI(Frame):
+    def __init__(self, master=None):
+        ProcessLogic_TERMINATE = False
+        
+        Frame.__init__(self, master)
+        self.pack()
+        self.createWidgets()
+    #End of __init__
+    
+    def createWidgets(self):
+        self.LogToggle = Button(self)
+        self.LogToggle['text'] = "Hide Log Window"
+        self.LogToggle['command'] = self.hideLog
+
+        self.QUITNOW = Button(self)
+        self.QUITNOW['text'] = "EXIT NOW"
+        self.QUITNOW['bg'] = "red"
+        self.QUITNOW['command'] = self.RAGEQUIT
+        
+        self.LogToggle.pack({"side": "left"})
+        self.QUITNOW.pack({"side": "right"})
+    #End of createWidgets
+
+    def hideLog(self):
+        # Hides / Shows the logging window.
+        pass # NOT YET IMPLEMENTED
+    #End of hideLog
+
+    def RAGEQUIT(self):
+        # Quickly exits everything, PANIC
+        try:
+            ProcessLogic.terminate()
+        except NameError:
+            ProcessLogic_TERMINATE = True
+        
+        print ("\n\n\n\n---------------------------------------------")
+        print (" This application was RAGEQUIT by the user ! ")
+        print ("---------------------------------------------")
+        
+        self.destroy()
+        root.destroy()
+    #End of RAGEQUIT
+#End of GUI
+
 if __name__ == '__main__':
     print ("\n\n\n\n-----------------------------------------------------")
     print ("  Welcome to PolyBuild Isometric Client / Build Bot  ")
@@ -32,34 +76,39 @@ if __name__ == '__main__':
     
     config = ConfigParser.RawConfigParser()
     config.readfp(open('config.txt', 'r+'))
-    
-    if config.has_section("Account"):
-        username = config.get("Account", "username")
-        password = config.get("Account", "password")
-    else:
-        username = raw_input("Minecraft Account Username: ")
-        password = raw_input("Minecraft Account Password: ")
 
-        config.add_section("Account")
-        config.set("Account", "username", username)
-        config.set("Account", "password", password)
-    #End of Account switch
-
-    if config.has_section("Options"):
-        automated = config.get("Options", "automated")
-        logLevel = config.get("Options", "logLevel")
-        silent = config.get("Options", "silent")
-    else:
-        automated = False
-        logLevel = "DEBUG"
-        silent = True
-
-        config.add_section("Options")
-        config.set("Options", "automated", False)
-        config.set("Options", "logLevel", "DEBUG")
-        config.set("Options", "silent", True)
-    #End of Options switch
-    config.write(open('config.txt', 'w+'))
+    try:
+        if config.has_section("Account"):
+            username = config.get("Account", "username")
+            password = config.get("Account", "password")
+        else:
+            username = raw_input("Minecraft Account Username: ")
+            password = raw_input("Minecraft Account Password: ")
+            
+            config.add_section("Account")
+            config.set("Account", "username", username)
+            config.set("Account", "password", password)
+        #End of Account switch
+        
+        if config.has_section("Options"):
+            automated = config.get("Options", "automated")
+            logLevel = config.get("Options", "logLevel")
+            silent = config.get("Options", "silent")
+        else:
+            automated = False
+            logLevel = "DEBUG"
+            silent = True
+            
+            config.add_section("Options")
+            config.set("Options", "automated", False)
+            config.set("Options", "logLevel", "DEBUG")
+            config.set("Options", "silent", True)
+        #End of Options switch
+        config.write(open('config.txt', 'w+'))
+    except:
+        print (" Error with configuration engine! ")
+        print ("Please make sure your config is writable, and not borked.")
+    #End of try, except
     
     loginurl = "http://www.minecraft.net/game/getversion.jsp?"
     
@@ -81,6 +130,12 @@ if __name__ == '__main__':
             session_id  = loginResult[3]
     except:
         print ("We got an unexpected response from minecraft.net")
+    #End of try, except
+    
+    print ("\n\nLaunching Graphical User Interface...")
+
+    root = Tk()
+    app = GUI(master=root)
     
     argv = {"username": username,
             "session_id": session_id,
@@ -88,6 +143,7 @@ if __name__ == '__main__':
             "logLevel": logLevel,
             "silent": silent}
     
-  #  ProcessLogic = Process(target=logic.run, args=argv)
-  #  ProcessLogic.start()
+    #ProcessLogic = Process(target=logic.run, args=argv)
+    #ProcessLogic.start()
+    app.mainloop()
 #End of core insertion point
