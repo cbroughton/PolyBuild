@@ -1,5 +1,8 @@
 *.pyc
-src/*
+
+src/SMP.py
+src/packets.py
+src/construct/*
 
 config.txt
 rules.xml
