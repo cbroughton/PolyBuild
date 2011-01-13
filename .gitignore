@@ -1,0 +1,5 @@
+*.pyc
+src/*
+
+config.txt
+rules.xml
