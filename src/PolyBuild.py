@@ -25,23 +25,21 @@ except:
 import logic
 
 class GUI(Frame):
-    def __init__(self, master=None):
+    def __init__(self, master=None, parent=top):
         ProcessLogic_TERMINATE = False
         
         Frame.__init__(self, master)
+        self.top = Toplevel(parent)
         self.pack()
         self.createWidgets()
     #End of __init__
     
     def createWidgets(self):
         self.LogToggle = Button(self)
-        self.LogToggle['text'] = "Hide Log Window"
-        self.LogToggle['command'] = self.hideLog
+        self.LogToggle.configure(text="Hide Log Window",command=self.hideLog)
 
         self.QUITNOW = Button(self)
-        self.QUITNOW['text'] = "EXIT NOW"
-        self.QUITNOW['bg'] = "red"
-        self.QUITNOW['command'] = self.RAGEQUIT
+        self.QUITNOW.configure(text="EXIT NOW",bg="red",command=self.RAGEQUIT)
         
         self.LogToggle.pack({"side": "left"})
         self.QUITNOW.pack({"side": "right"})
@@ -135,7 +133,8 @@ if __name__ == '__main__':
     print ("\n\nLaunching Graphical User Interface...")
 
     root = Tk()
-    app = GUI(master=root)
+    top = Toplevel()
+    app = GUI(master=root, parent=top)
     
     argv = {"username": username,
             "session_id": session_id,
@@ -143,7 +142,7 @@ if __name__ == '__main__':
             "logLevel": logLevel,
             "silent": silent}
     
-    #ProcessLogic = Process(target=logic.run, args=argv)
-    #ProcessLogic.start()
+    ProcessLogic = Process(target=logic.run, args=argv)
+    ProcessLogic.start()
     app.mainloop()
 #End of core insertion point
