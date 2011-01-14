@@ -1,5 +1,9 @@
-def __init__:
-    pass
-#End of __init__
+def run(username, session_id, automated, logLevel, silent):
+    # TODO: Initiate Reactor
+    # TODO: Design Queue
+    # TODO: Query Queue
 
-# Blank File
+    # TODO: ...
+
+    pass
+#End of run

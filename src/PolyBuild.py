@@ -22,51 +22,8 @@ except:
     quit
 
 # Import Local Process
+from gui import GUI_Main
 import logic
-
-class GUI(Frame):
-    def __init__(self, master=None):
-        ProcessLogic_TERMINATE = False
-        
-        Frame.__init__(self, master)
-        self.pack()
-        self.createWidgets()
-    #End of __init__
-    
-    def createWidgets(self):
-        self.LogToggle = Button(self)
-        self.LogToggle['text'] = "Hide Log Window"
-        self.LogToggle['command'] = self.hideLog
-
-        self.QUITNOW = Button(self)
-        self.QUITNOW['text'] = "EXIT NOW"
-        self.QUITNOW['bg'] = "red"
-        self.QUITNOW['command'] = self.RAGEQUIT
-        
-        self.LogToggle.pack({"side": "left"})
-        self.QUITNOW.pack({"side": "right"})
-    #End of createWidgets
-
-    def hideLog(self):
-        # Hides / Shows the logging window.
-        pass # NOT YET IMPLEMENTED
-    #End of hideLog
-
-    def RAGEQUIT(self):
-        # Quickly exits everything, PANIC
-        try:
-            ProcessLogic.terminate()
-        except NameError:
-            ProcessLogic_TERMINATE = True
-        
-        print ("\n\n\n\n---------------------------------------------")
-        print (" This application was RAGEQUIT by the user ! ")
-        print ("---------------------------------------------")
-        
-        self.destroy()
-        root.destroy()
-    #End of RAGEQUIT
-#End of GUI
 
 if __name__ == '__main__':
     print ("\n\n\n\n-----------------------------------------------------")
@@ -75,7 +32,7 @@ if __name__ == '__main__':
     print ("-----------------------------------------------------")
     
     config = ConfigParser.RawConfigParser()
-    config.readfp(open('config.txt', 'r+'))
+    config.readfp(open('config.txt', 'w+'))
 
     try:
         if config.has_section("Account"):
@@ -104,13 +61,14 @@ if __name__ == '__main__':
             config.set("Options", "logLevel", "DEBUG")
             config.set("Options", "silent", True)
         #End of Options switch
-        config.write(open('config.txt', 'w+'))
+        config.write(open('config.txt', 'w'))
     except:
         print (" Error with configuration engine! ")
         print ("Please make sure your config is writable, and not borked.")
     #End of try, except
     
     loginurl = "http://www.minecraft.net/game/getversion.jsp?"
+    session_id = ""
     
     print ("\n\nPlease wait while we login to minecraft.net")
     login = mechanize.Browser()
@@ -133,17 +91,20 @@ if __name__ == '__main__':
     #End of try, except
     
     print ("\n\nLaunching Graphical User Interface...")
+    
+    argv = {0: username,
+            1: session_id,
+            2: automated,
+            3: logLevel,
+            4: silent}
+    
+    ProcessLogic = Process(target=logic.run, args=argv)
+    ProcessLogic.start()
 
     root = Tk()
-    app = GUI(master=root)
+    GUI_Ores = Frame(root)
+    top = Toplevel(GUI_Ores)
     
-    argv = {"username": username,
-            "session_id": session_id,
-            "automated": automated,
-            "logLevel": logLevel,
-            "silent": silent}
-    
-    #ProcessLogic = Process(target=logic.run, args=argv)
-    #ProcessLogic.start()
-    app.mainloop()
+    GUI_Main.__init__()
+    top.mainloop()
 #End of core insertion point
