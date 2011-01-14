@@ -22,49 +22,8 @@ except:
     quit
 
 # Import Local Process
+from gui import GUI_Main
 import logic
-
-class GUI(Frame):
-    def __init__(self, master):
-        ProcessLogic_TERMINATE = False
-        Frame.__init__(self, master)
-        self.pack()
-        self.createWidgets()
-    #End of __init__
-    
-    def createWidgets(self):
-        self.LogToggle = Button(self)
-        self.LogToggle.configure(text="Hide Log Window",command=self.hideLog)
-
-        self.QUITNOW = Button(self)
-        self.QUITNOW.configure(text="EXIT NOW",bg="red",command=self.RAGEQUIT)
-        
-        self.LogToggle.pack({"side": "left"})
-        self.QUITNOW.pack({"side": "right"})
-    #End of createWidgets
-
-    def hideLog(self):
-        # Hides / Shows the logging window.
-        pass # NOT YET IMPLEMENTED
-    #End of hideLog
-
-    def RAGEQUIT(self):
-        # Quickly exits everything, PANIC
-        try:
-            ProcessLogic.terminate()
-        except NameError:
-            ProcessLogic_TERMINATE = True
-        
-        print ("\n\n\n\n---------------------------------------------")
-        print (" This application was RAGEQUIT by the user ! ")
-        print ("---------------------------------------------")
-
-        self.destroy()
-        top.destroy()
-        
-        root.destroy()
-    #End of RAGEQUIT
-#End of GUI
 
 if __name__ == '__main__':
     print ("\n\n\n\n-----------------------------------------------------")
@@ -109,6 +68,7 @@ if __name__ == '__main__':
     #End of try, except
     
     loginurl = "http://www.minecraft.net/game/getversion.jsp?"
+    session_id = ""
     
     print ("\n\nPlease wait while we login to minecraft.net")
     login = mechanize.Browser()
@@ -131,19 +91,20 @@ if __name__ == '__main__':
     #End of try, except
     
     print ("\n\nLaunching Graphical User Interface...")
-
-    root = Tk()
-    top = Toplevel(GUI(root))
-#    app = GUI(master=root, top)
     
-    argv = {"username": username,
-            "session_id": session_id,
-            "automated": automated,
-            "logLevel": logLevel,
-            "silent": silent}
+    argv = {0: username,
+            1: session_id,
+            2: automated,
+            3: logLevel,
+            4: silent}
     
     ProcessLogic = Process(target=logic.run, args=argv)
     ProcessLogic.start()
+
+    root = Tk()
+    GUI_Ores = Frame(root)
+    top = Toplevel(GUI_Ores)
+    
+    GUI_Main.__init__()
     top.mainloop()
-#    app.mainloop()
 #End of core insertion point

@@ -1,16 +1,9 @@
-
-
-def run(args):
-    username = args[0]
-    session_id = args[1]
-    automated = args[2]
-    logLevel = args[3]
-    silent = args[4]
-
+def run(username, session_id, automated, logLevel, silent):
     # TODO: Initiate Reactor
     # TODO: Design Queue
     # TODO: Query Queue
 
-    # TODO: 
-    
+    # TODO: ...
+
+    pass
 #End of run
