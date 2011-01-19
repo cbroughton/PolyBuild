@@ -25,11 +25,9 @@ except:
 import logic
 
 class GUI(Frame):
-    def __init__(self, master=None, parent=top):
+    def __init__(self, master):
         ProcessLogic_TERMINATE = False
-        
         Frame.__init__(self, master)
-        self.top = Toplevel(parent)
         self.pack()
         self.createWidgets()
     #End of __init__
@@ -60,8 +58,10 @@ class GUI(Frame):
         print ("\n\n\n\n---------------------------------------------")
         print (" This application was RAGEQUIT by the user ! ")
         print ("---------------------------------------------")
-        
+
         self.destroy()
+        top.destroy()
+        
         root.destroy()
     #End of RAGEQUIT
 #End of GUI
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     print ("-----------------------------------------------------")
     
     config = ConfigParser.RawConfigParser()
-    config.readfp(open('config.txt', 'r+'))
+    config.readfp(open('config.txt', 'w+'))
 
     try:
         if config.has_section("Account"):
@@ -102,7 +102,7 @@ if __name__ == '__main__':
             config.set("Options", "logLevel", "DEBUG")
             config.set("Options", "silent", True)
         #End of Options switch
-        config.write(open('config.txt', 'w+'))
+        config.write(open('config.txt', 'w'))
     except:
         print (" Error with configuration engine! ")
         print ("Please make sure your config is writable, and not borked.")
@@ -133,8 +133,8 @@ if __name__ == '__main__':
     print ("\n\nLaunching Graphical User Interface...")
 
     root = Tk()
-    top = Toplevel()
-    app = GUI(master=root, parent=top)
+    top = Toplevel(GUI(root))
+#    app = GUI(master=root, top)
     
     argv = {"username": username,
             "session_id": session_id,
@@ -144,5 +144,6 @@ if __name__ == '__main__':
     
     ProcessLogic = Process(target=logic.run, args=argv)
     ProcessLogic.start()
-    app.mainloop()
+    top.mainloop()
+#    app.mainloop()
 #End of core insertion point
